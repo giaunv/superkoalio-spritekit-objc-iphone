@@ -10,4 +10,7 @@
 
 @interface Player : SKSpriteNode
 
+@property (nonatomic, assign) CGPoint velocity;
+-(void)update:(NSTimeInterval)delta;
+
 @end

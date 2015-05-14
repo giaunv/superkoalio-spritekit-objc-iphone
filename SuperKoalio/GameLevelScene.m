@@ -14,10 +14,28 @@
 
 @property (nonatomic, strong) JSTileMap *map;
 @property (nonatomic, strong) Player *player;
+@property (nonatomic, assign) NSTimeInterval previousUpdateTime;
 
 @end
 
 @implementation GameLevelScene
+
+// Before the scene is rendered, every frame will get called to this method.
+-(void)update:(NSTimeInterval)currentTime{
+  // delta is used to scale movement and other forces (like gravity) in order to achieve smooth, consistent animations.
+  NSTimeInterval delta = currentTime - self.previousUpdateTime;
+  
+  // Sometimes delta may spike. This occurs at the beginning of the game (for the first few frames as things are still being loaded into memory) and occasionaly when something happens on the device (like when a system notification comes in).
+  // By capping it at 0.02, we reduce the chance of getting a time step that is too large (which can result in the physics engine behaving in unexpected ways, like Koalio moving through an entire tile).
+  if (delta > 0.02) {
+    delta = 0.02;
+  }
+  
+  // Used for next frame to determine delta
+  self.previousUpdateTime = currentTime;
+  
+  [self.player update:delta];
+}
 
 -(id)initWithSize:(CGSize)size {
   if (self = [super initWithSize:size]) {

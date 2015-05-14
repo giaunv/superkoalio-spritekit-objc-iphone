@@ -7,7 +7,36 @@
 //
 
 #import "Player.h"
+// SKTUTils provide some convenience methods
+#import "SKTUtils.h"
 
 @implementation Player
+
+-(instancetype)initWithImageNamed:(NSString *)name{
+    if (self = [super initWithImageNamed:name]) {
+        self.velocity = CGPointMake(0.0, 0.0);
+    }
+    
+    return self;
+}
+
+-(void)update:(NSTimeInterval)delta{
+    // Velocity desribes how fast an object is moving in a given direction.
+    // Accleration is the rate of change in velocity - how an object's speed and direction change over time.
+    // A force is an influence that causes a change in speed or direction.
+    
+    // For each second, we're accelerating the velocity of the Koala 450 points towards the floor
+    CGPoint gravity = CGPointMake(0.0, -450.0);
+    // Scale the accleration down to the size of the current time step.
+    // Even when faced with a variable frame rate, we'll still get consistent accleration.
+    CGPoint gravityStep = CGPointMultiplyScalar(gravity, delta);
+    
+    // Get consitent velocity for a single timestep, no matter what the frame rate is.
+    self.velocity = CGPointAdd(self.velocity, gravityStep);
+    CGPoint velocityStep = CGPointMultiplyScalar(self.velocity, delta);
+    
+    // Get the updated position for the Koala.
+    self.position = CGPointAdd(self.position, velocityStep);
+}
 
 @end
