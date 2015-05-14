@@ -20,6 +20,22 @@
 
 @implementation GameLevelScene
 
+// Finds the pixel origin coordinate by multiplying the tile coordinate by the tile size
+-(CGRect)tileRectFromTileCoords:(CGPoint)tileCoords {
+  float levelHeightInPixels = self.map.mapSize.height * self.map.tileSize.height;
+  // We need to invert the coordinate for the height, because the coordinate system of SpriteKit/OpenGL has an origin at the bottom left of the world, but the tile map coordinate system starts at the top left of the world.
+  // The tile coordinate sytem is zero-based, so the 20th tile has an actual coordinate of 19
+  CGPoint origin = CGPointMake(tileCoords.x * self.map.tileSize.width, levelHeightInPixels - ((tileCoords.y + 1)*self.map.tileSize.height));
+  return CGRectMake(origin.x, origin.y, self.map.tileSize.width, self.map.tileSize.height);
+}
+
+// Finds the tile GID by the tile coordinate.
+// The TMXLayer class contains a method to find a GID based on pixel coordinates, called tileGIDAt:, but we need to find the GID by the tile coordinate, so we need to access the TMXLayerInfo object, which has such a method.
+-(NSInteger)tileGIDAtTileCoord:(CGPoint)coord forLayer:(TMXLayer *)layer{
+  TMXLayerInfo *layerInfo = layer.layerInfo;
+  return [layerInfo tileGidAtCoord:coord];
+}
+
 // Before the scene is rendered, every frame will get called to this method.
 -(void)update:(NSTimeInterval)currentTime{
   // delta is used to scale movement and other forces (like gravity) in order to achieve smooth, consistent animations.
