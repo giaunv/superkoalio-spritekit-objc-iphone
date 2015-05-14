@@ -7,10 +7,16 @@
 //
 
 #import "Player.h"
-// SKTUTils provide some convenience methods
+// SKTUTils provide some CGPoint convenience methods
 #import "SKTUtils.h"
 
 @implementation Player
+
+-(CGRect)collisionBoundingBox{
+    // CGRectInset shrinks a CGRect by the number of points specified in the second and the third arguments.
+    // In this case, the width of our collision bounding box will be four points smaller - two on each side - than the bounding box based on the image file we're using
+    return CGRectInset(self.frame, 2, 0);
+}
 
 -(instancetype)initWithImageNamed:(NSString *)name{
     if (self = [super initWithImageNamed:name]) {
